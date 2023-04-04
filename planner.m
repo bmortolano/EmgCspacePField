@@ -9,7 +9,7 @@ classdef planner
 %   env_field - Instantiation of env_pot_field class
 
     properties
-        intent_field = user_intent
-        env_field = env_pot_field
+        intent_field = user_intent;
+        env_field = env_pot_field;
     end
 end
