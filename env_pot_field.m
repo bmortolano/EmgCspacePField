@@ -12,8 +12,8 @@ classdef env_pot_field
 
     properties
         field = [];
-        obstacles = [];
-        goal = [];
+        obstacles = obstacle.empty;
+        goal = np.zeros(2);
         size = [100 100];
         repulsion_decay = 5;
         repulsion_magnitude = 20;
@@ -47,12 +47,12 @@ classdef env_pot_field
                     % Iterate across all obstacle edges
                     for obstacle = obstacles
                         for edge = obstacle.edges
-                            d = point_to_line((i,j), edge[1], edge[2]))
+                            d = point_to_line(i, j, edge(1), edge(2))
                             node_potential = node_potential + repulsion_magnitude * exp(-repulsion_decay * d)
                         end
                     end
                     
-                    field[i, j] = node_potential;
+                    field(i, j) = node_potential;
                 end
             end
             
