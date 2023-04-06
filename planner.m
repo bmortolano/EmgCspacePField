@@ -1,4 +1,4 @@
-classdef planner
+classdef planner < handle
 % This class combines potential fields from the user_intent class and
 % the env_pot_field classes and performs local planning over them.
 % Planning is performed by linearly interpolating between the current

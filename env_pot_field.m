@@ -1,4 +1,4 @@
-classdef env_pot_field
+classdef env_pot_field < handle
 % This class is used to generated a potential field from an input of
 % obstacles and goals from the environment.
 % 
@@ -13,7 +13,7 @@ classdef env_pot_field
     properties
         field = [];
         obstacles = obstacle.empty;
-        goal = np.zeros(2);
+        goal = zeros(2);
         size = [100 100];
         repulsion_decay = 5;
         repulsion_magnitude = 20;
@@ -21,12 +21,17 @@ classdef env_pot_field
     
     methods
         
-        function set_goal(new_goal)
-            goal = new_goal;
+        function reset(obj, new_size)
+            obj.size = new_size;
+            obj.field = zeros(size);
         end
         
-        function add_obstacle(obst)
-            obstacles = [obstacles obst];
+        function set_goal(obj, new_goal)
+            obj.goal = new_goal;
+        end
+        
+        function add_obstacle(obj, obst)
+            obj.obstacles(end+1) = obst;
         end
         
         function d = point_to_line(pt, v1, v2)
@@ -35,8 +40,8 @@ classdef env_pot_field
             d = norm(cross(a,b)) / norm(a);
         end
         
-        function upate_pot_field(size)
-            field = zeros(size);
+        function upate_pot_field(obj, size)
+            obj.field = zeros(size);
             
             % Iterate across entire field
             for i=1:size(field,1)
@@ -52,7 +57,7 @@ classdef env_pot_field
                         end
                     end
                     
-                    field(i, j) = node_potential;
+                    obj.field(i, j) = node_potential;
                 end
             end
             
