@@ -20,6 +20,13 @@ classdef obstacle < handle
             obj.edges = edges_new;
         end
         
+        function [pts_x, pts_y] = get_inside_pts(obj, x, y)
+            in = inpolygon(x, y, obj.edges(:,1), obj.edges(:,2));
+            
+            pts_x = x(in);
+            pts_y = y(in);
+        end
+        
     end
     
 end
