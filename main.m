@@ -57,9 +57,13 @@ c_map.plotMap(0)
 env_field = env_pot_field(cmap_sz);
 env_field.add_obstacle(c_map.obstacles(1));
 env_field.update_pot_field();
+xlabel("Shoulder Angle (deg)")
+ylabel("Elbow Angle (deg)")
 
 env_field.plot_sdf()
 env_field.plot_field()
+xlabel("Shoulder Angle (deg)")
+ylabel("Elbow Angle (deg)")
 
 %%
 function [t1 t2] = convert_Euclidean_to_Config(e_pt, geom)
