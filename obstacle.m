@@ -21,10 +21,15 @@ classdef obstacle < handle
         end
         
         function [pts_x, pts_y] = get_inside_pts(obj, x, y)
-            in = inpolygon(x, y, obj.edges(:,1), obj.edges(:,2));
+            vertices = obj.get_vertices();
+            in = inpolygon(x, y, vertices(:,1), vertices(:,2));
             
             pts_x = x(in);
             pts_y = y(in);
+        end
+        
+        function vertices = get_vertices(obj)
+            vertices = [obj.edges(:,1:2); obj.edges(end, 3:4)];
         end
         
     end

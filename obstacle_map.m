@@ -32,7 +32,7 @@ classdef obstacle_map < handle
             disp(obj.obstacles)
         end
         
-        function plotMap(obj)
+        function plotMap(obj, centerAtZero)
             figure
             hold on
             for obstacle = obj.obstacles
@@ -42,8 +42,14 @@ classdef obstacle_map < handle
                 end
             end
             
-            xlim([0, obj.sz(1)])
-            ylim([0, obj.sz(2)])
+            if (centerAtZero)
+                xlim([-obj.sz(1)/2, obj.sz(1)/2])
+                ylim([-obj.sz(1)/2, obj.sz(2)/2])
+            else (centerAtZero)
+                xlim([0, obj.sz(1)])
+                ylim([0, obj.sz(2)])
+            end
+                
         end
         
         

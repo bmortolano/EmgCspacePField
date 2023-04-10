@@ -6,10 +6,10 @@ link_lengths = [80, 80]; % Robot link lengths
 
 %%
 % Create a grid of size sx to use for obstacle flooding
-sz = [200, 200]
+sz = [300, 300]
 
-linx = linspace(0, sz(1), 250);
-liny = linspace(0, sz(2), 250);
+linx = linspace(-sz(1)/2, sz(1)/2, 250);
+liny = linspace(-sz(2)/2, sz(2)/2, 250);
 
 [gridx, gridy] = meshgrid(linx, liny);
 
@@ -21,17 +21,24 @@ euc_map = obstacle_map(sz);
 
 % Create obstacles
 obst1_edges = [
-    [[50, 50], [70, 50]], 
-    [[70, 50], [90, 70]],
-    [[90, 70], [90, 90]],
-    [[90, 90], [70, 110]],
-    [[70, 110], [50, 110]],
-    [[50, 110], [30, 90]],
-    [[30, 90], [30, 70]],
-    [[30, 70], [50, 50]]];
+    [[30, 50], [50, 50]], 
+    [[50, 50], [70, 70]],
+    [[70, 70], [70, 90]],
+    [[70, 90], [50, 110]],
+    [[50, 110], [30, 110]],
+    [[30, 110], [10, 90]],
+    [[10, 90], [10, 70]],
+    [[10, 70], [30, 50]]];
+
+angles = linspace(0, 360, 50);
+r = 20;
+offset_x = -60;
+offset_y = -20;
+obst2_edges = [r*sind(angles)'+offset_y r*cosd(angles)'+offset_x r*sind(angles-angles(2))'+offset_y r*cosd(angles-angles(2))'+offset_x ];
 
 euc_map.add_obstacle(obstacle(obst1_edges))
-euc_map.plotMap()
+euc_map.add_obstacle(obstacle(obst2_edges))
+euc_map.plotMap(1)
 
 %%
 % Create corresponding C-Space euc_map
@@ -39,19 +46,20 @@ cmap_sz = [360 360];
 c_map = obstacle_map(cmap_sz);
 
 for e_obstacle = euc_map.obstacles
-    c_obstacle = convert_eObst_to_c_Obst(e_obstacle, link_lengths, gridx, gridy)
+    c_obstacle = convert_eObst_to_c_Obst(e_obstacle, link_lengths, gridx, gridy);
     c_map.add_obstacle(c_obstacle);
 end
 
-c_map.plotMap()
+c_map.plotMap(0)
 
 %%
+% Create and plot field
 env_field = env_pot_field(cmap_sz);
 env_field.add_obstacle(c_map.obstacles(1));
 env_field.update_pot_field();
 
-figure
-contourf(env_field.field)
+env_field.plot_sdf()
+env_field.plot_field()
 
 %%
 function [t1 t2] = convert_Euclidean_to_Config(e_pt, geom)
@@ -72,6 +80,9 @@ function [t1 t2] = convert_Euclidean_to_Config(e_pt, geom)
 
     t2 = acosd( (x^2 + y^2 - a1^2 - a2^2) / (2 * a1 * a2) );
     t1 = atan2d(y, x) + atan2d( a2*sin(t2), a1 + a2*cos(t2) );
+    
+%     t1 = mod(t1, 360);
+%     t2 = mod(t2, 360);
 end
 
 function c_obst = convert_eObst_to_c_Obst(e_obst, geom, gridx, gridy)
