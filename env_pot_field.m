@@ -46,12 +46,12 @@ classdef env_pot_field < handle
             d = norm(cross(a,b)) / norm(a);
         end
         
-        function update_pot_field(obj)
+        function update_pot_field(obj, wrapAround)
             obj.field = zeros(obj.sz);
             sdf = 100000 * ones(size(obj.field));
             
             for obst = obj.obstacles
-                sdf = obj.signed_dist_field(sdf, obst);
+                sdf = obj.signed_dist_field(sdf, obst, 360);
             end
             
             obj.sdf = sdf;
@@ -62,15 +62,9 @@ classdef env_pot_field < handle
                 end
             end
             
-            figure
-            contourf(obj.sdf)
-            
-            figure
-            contourf(obj.field)
-            
         end
         
-        function sdf_out = signed_dist_field(obj, sdf_in, obstacle)
+        function sdf_out = signed_dist_field(obj, sdf_in, obstacle, wrapAroundNumber)
             % Overwrite input signed distance field using some obstacle
             obs_vertices = obstacle.get_vertices();
             sdf_out = zeros(size(sdf_in));
@@ -78,7 +72,14 @@ classdef env_pot_field < handle
             % Iterate across entire field
             for i=1:size(sdf_out,2) % Iterate over x
                 for j=1:size(sdf_out,1) % Iterate over y
-                    [d, ~, ~] = obj.p_poly_dist(j, i, obs_vertices(:,2), obs_vertices(:, 1));
+                    [d1, ~, ~] = obj.p_poly_dist(j, i, obs_vertices(:,2), obs_vertices(:, 1));
+                    [d2, ~, ~] = obj.p_poly_dist(j, i-wrapAroundNumber, obs_vertices(:,2), obs_vertices(:, 1));
+                    [d3, ~, ~] = obj.p_poly_dist(j-wrapAroundNumber, i, obs_vertices(:,2), obs_vertices(:, 1));
+                    [d4, ~, ~] = obj.p_poly_dist(j-wrapAroundNumber, i-wrapAroundNumber, obs_vertices(:,2), obs_vertices(:, 1));
+                    
+                    d = min(d1, d2);
+                    d = min(d, d3);
+                    d = min(d, d4);
                     sdf_out(j, i) = min(sdf_in(j, i), d);
                 end
             end
