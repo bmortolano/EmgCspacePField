@@ -11,7 +11,7 @@ classdef user_intent_file_wrapper < handle
         intent_field = user_intent([0,0,0,0], [0,0]);
         file;
         emg_data_matrix;
-        row_counter = 0;
+        row_counter = 1000;
     end
     
     methods
@@ -23,7 +23,7 @@ classdef user_intent_file_wrapper < handle
         end
         
         function field = step(obj)
-            obj.row_counter = obj.row_counter + 5;
+            obj.row_counter = obj.row_counter + 20;
             row = obj.emg_data_matrix(obj.row_counter, :);
             meas = [row(3), row(5), row(15), row(17)];
             obj.intent_field.input_measurement(meas')

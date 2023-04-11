@@ -7,16 +7,27 @@ classdef planner < handle
 
         function grad = get_grad(obj, x, net_field) %returns gradient vector. x describes current location on pot field
             x = round(x);
-            step = 1;
-            if x(1)>1 && x(1)<size(net_field, 1) && x(2)>1 && x(2)<size(net_field, 2) %check if at edges of field
-                grad1 = net_field(x(1)+step,x(2))-net_field(x(1),x(2));
-                grad2 = net_field(x(1),x(2)+step)-net_field(x(1),x(2));
-            else
-                grad1 = 0; %improve error handling at some point
-                grad2 = 0;
+
+            if x(1)>359
+                x(1)=359;
             end
 
-            grad = [grad2, grad1]/step;
+            if x(2)>359
+                x(2)=359;
+            end
+
+            if x(1)<1
+                x(1)=1;
+            end
+
+            if x(2)<1
+                x(2)=1;
+            end
+
+            grad1 = net_field(x(2)+1,x(1))-net_field(x(2),x(1));
+            grad2 = net_field(x(2),x(1)+1)-net_field(x(2),x(1));
+
+            grad = [grad2, grad1];
         end
 
         function new_x=descend_grad(obj, x, net_field)%returns next location along path. x describes current location on pot field

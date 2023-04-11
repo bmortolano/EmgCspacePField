@@ -16,8 +16,8 @@ classdef env_pot_field < handle
         obstacles = obstacle.empty;
         goal = zeros(2);
         sz = [100 100];
-        repulsion_decay = 0.05;
-        repulsion_magnitude = 20;
+        repulsion_decay = 0.02;
+        repulsion_magnitude = 5;
     end
     
     methods
