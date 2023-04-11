@@ -1,5 +1,0 @@
-classdef user_intent
-% This class is able to determine (or simulate) a desired action 
-    
-    
-end
