@@ -25,9 +25,8 @@ classdef user_intent < handle
         
         function create_field(obj, max1, max2)
             % Create a planar potential field
-            a = repelem(linspace(0, max1, obj.size(1))', 1, obj.size(1));
-            b = repelem(linspace(0, max2, obj.size(2)), obj.size(2), 1);
-            obj.field = a + b;
+            [t1,t2] = meshgrid(0:obj.size(1),0:obj.size(2));
+            obj.field = -1*(max1*t1/obj.size(1) + max2*t2/obj.size(2));
         end
         
     end
