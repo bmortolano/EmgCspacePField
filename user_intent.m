@@ -24,7 +24,7 @@ classdef user_intent < handle
         
         function reset(obj, new_size)
             obj.size = new_size;
-            obj.field = zeros(size);
+            obj.field = zeros(obj.size);
         end
         
         function input_measurement(obj, measurement)
@@ -34,11 +34,10 @@ classdef user_intent < handle
                 obj.eta(2) * (obj.intent_vector(3) - obj.intent_vector(4)))
         end
         
-        function create_field(obj, max1, max2)
+        function create_field(obj, max1, max2) %max1 is emg1 data point. max2 is emg2 data point
             % Create a planar potential field
-            a = repelem(linspace(0, max1, obj.size(1))', 1, obj.size(1));
-            b = repelem(linspace(0, max2, obj.size(2)), obj.size(2), 1);
-            obj.field = a + b;
+            [t1,t2] = meshgrid(0:obj.size(1),0:obj.size(2));
+            obj.field = -1*(max1*t1/obj.size(1) + max2*t2/obj.size(2));
         end
         
         function plot_field(obj)
