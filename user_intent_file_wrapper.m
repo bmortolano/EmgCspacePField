@@ -23,7 +23,7 @@ classdef user_intent_file_wrapper < handle
         end
         
         function field = step(obj)
-            obj.row_counter = obj.row_counter + 1;
+            obj.row_counter = obj.row_counter + 5;
             row = obj.emg_data_matrix(obj.row_counter, :);
             meas = [row(3), row(5), row(15), row(17)];
             obj.intent_field.input_measurement(meas')

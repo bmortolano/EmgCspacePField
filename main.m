@@ -67,23 +67,54 @@ ylabel("Elbow Angle (deg)")
 
 %%
 % Create user intent map
-intent = user_intent_file_wrapper(0.8 * ones(4,1), [1, 1], "Prelim_EMG_data.xlsx")
+intent = user_intent_file_wrapper(0.8 * ones(4,1), [500, 500], "Prelim_EMG_data.xlsx")
 
 %% Create video for EMG Potential Field
-vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField4.mp4', 'MPEG-4');
-vw.Quality = 70;
-% vw.FrameRate = 60;
-open(vw);
-pause(5)
+% vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField4.mp4', 'MPEG-4');
+% vw.Quality = 70;
+% % vw.FrameRate = 60;
+% open(vw);
+% pause(5)
+
+config = [175, 50];
+plnr = planner();
+gradient_map_x = zeros(size(intent.intent_field.field));
+gradient_map_y = zeros(size(intent.intent_field.field));
 
 for i=1:20000
     intent.step()
-    figure(1)
-    contourf(intent.intent_field.field, -1:.01:1)
-    title("EMG Potential Field")
-    xlabel("Shoulder Angle (deg)")
-    ylabel("Elbow Angle (deg)")
-    writeVideo(vw, getframe(gcf));
+    net_field = intent.intent_field.field + env_field.field;
+    config = plnr.descend_grad(config, net_field)
+    
+    figure(4)
+    contourf(intent.intent_field.field)
+%     title("EMG Potential Field")
+%     xlabel("Shoulder Angle (deg)")
+%     ylabel("Elbow Angle (deg)")
+%     writeVideo(vw, getframe(gcf));
+
+    figure(5)
+    contourf(env_field.field)
+    
+    figure(6)
+    hold on
+    contourf(net_field)
+    plot(config(1), config(2), 'r.', 'MarkerSize', 30)
+    
+%     for i=1:size(net_field,1)-5
+%         for j=1:size(net_field,2)-5
+%             grad = plnr.get_grad([i, j], net_field);
+%             gradient_map_x(i,j) = grad(1);
+%             gradient_map_y(i,j) = grad(2);
+%         end
+%     end
+%     
+%     figure(7)
+%     contourf(gradient_map_x)
+%     
+%     figure(8)
+%     contourf(gradient_map_y)
+    
 end
 
 vw.close();

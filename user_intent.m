@@ -11,7 +11,7 @@ classdef user_intent < handle
         intent_vector = zeros([4,1]);
         alpha = zeros([4,1]);
         eta = zeros([1,2]);
-        size = [100 100];
+        size = [360 360];
         field = [];
     end
     
@@ -31,12 +31,12 @@ classdef user_intent < handle
             % Put measurements into low-pass filter
             obj.intent_vector = obj.alpha .* obj.intent_vector + (1 - obj.alpha) .* measurement;
             obj.create_field(obj.eta(1) * (obj.intent_vector(1) - obj.intent_vector(2)), ...
-                obj.eta(2) * (obj.intent_vector(3) - obj.intent_vector(4)))
+                obj.eta(2) * (obj.intent_vector(4) - obj.intent_vector(3)))
         end
         
         function create_field(obj, max1, max2) %max1 is emg1 data point. max2 is emg2 data point
             % Create a planar potential field
-            [t1,t2] = meshgrid(0:obj.size(1),0:obj.size(2));
+            [t1,t2] = meshgrid(0:obj.size(1)-1,0:obj.size(2)-1);
             obj.field = -1*(max1*t1/obj.size(1) + max2*t2/obj.size(2));
         end
         
