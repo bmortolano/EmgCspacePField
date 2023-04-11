@@ -23,6 +23,13 @@ classdef user_intent < handle
             obj.field = zeros(size);
         end
         
+        function create_field(obj, max1, max2)
+            % Create a planar potential field
+            a = repelem(linspace(0, max1, obj.size(1))', 1, obj.size(1));
+            b = repelem(linspace(0, max2, obj.size(2)), obj.size(2), 1);
+            obj.field = a + b;
+        end
+        
     end
     
 end
