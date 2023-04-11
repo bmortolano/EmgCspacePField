@@ -66,6 +66,29 @@ xlabel("Shoulder Angle (deg)")
 ylabel("Elbow Angle (deg)")
 
 %%
+% Create user intent map
+intent = user_intent_file_wrapper(0.8 * ones(4,1), [1, 1], "Prelim_EMG_data.xlsx")
+
+%% Create video for EMG Potential Field
+vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField4.mp4', 'MPEG-4');
+vw.Quality = 70;
+% vw.FrameRate = 60;
+open(vw);
+pause(5)
+
+for i=1:20000
+    intent.step()
+    figure(1)
+    contourf(intent.intent_field.field, -1:.01:1)
+    title("EMG Potential Field")
+    xlabel("Shoulder Angle (deg)")
+    ylabel("Elbow Angle (deg)")
+    writeVideo(vw, getframe(gcf));
+end
+
+vw.close();
+
+%%
 function [t1 t2] = convert_Euclidean_to_Config(e_pt, geom)
     % Perform Inverse Kinematics to bring a point from Euclidean
     % space into C-space for a Two-Link Planar Manipulator
