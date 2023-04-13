@@ -11,7 +11,7 @@ classdef user_intent_file_wrapper < handle
         intent_field = user_intent([0,0,0,0], [0,0]);
         file;
         emg_data_matrix;
-        row_counter = 1000;
+        row_counter = 5000;
     end
     
     methods

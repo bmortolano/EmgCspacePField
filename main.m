@@ -39,6 +39,10 @@ obst2_edges = [r*sind(angles)'+offset_y r*cosd(angles)'+offset_x r*sind(angles-a
 euc_map.add_obstacle(obstacle(obst1_edges), 0)
 euc_map.add_obstacle(obstacle(obst2_edges), 0)
 euc_map.plotMap(1)
+set(gcf,'Color','w')
+title("Obstacles in Euclidean Space")
+xlabel("x")
+ylabel("y")
 
 %%
 % Create corresponding C-Space euc_map
@@ -51,6 +55,10 @@ for e_obstacle = euc_map.obstacles
 end
 
 c_map.plotMap(0)
+set(gcf,'Color','w')
+title("Obstacles in C-Space")
+xlabel("Shoulder Angle (deg)")
+ylabel("Elbow Angle (deg)")
 
 %%
 % Create and plot field
@@ -63,7 +71,11 @@ env_field.update_pot_field();
 xlabel("Shoulder Angle (deg)")
 ylabel("Elbow Angle (deg)")
 
+%%
 env_field.plot_sdf()
+xlabel("Shoulder Angle (deg)")
+ylabel("Elbow Angle (deg)")
+
 env_field.plot_field()
 xlabel("Shoulder Angle (deg)")
 ylabel("Elbow Angle (deg)")
@@ -88,7 +100,7 @@ set(gcf,'Color','w')
 
 pause(15)
 
-for i=1:20000
+for i=1:30000
     intent.step()
     net_field = intent.intent_field.field + env_field.field;
     config = plnr.descend_grad(config, net_field);
