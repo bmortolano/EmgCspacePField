@@ -70,37 +70,49 @@ ylabel("Elbow Angle (deg)")
 intent = user_intent_file_wrapper(0.8 * ones(4,1), [30, 30], "Prelim_EMG_data.xlsx")
 
 %% Create video for EMG Potential Field
-% vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField4.mp4', 'MPEG-4');
-% vw.Quality = 70;
-% % vw.FrameRate = 60;
-% open(vw);
-% pause(5)
+vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField12.mp4', 'MPEG-4');
+vw.Quality = 90;
+vw.FrameRate = 25;
+open(vw);
 
 config = [125, 50];
 plnr = planner();
 gradient_map_x = zeros(size(intent.intent_field.field));
 gradient_map_y = zeros(size(intent.intent_field.field));
 
+figure(6)
+set(gcf,'Color','w')
+
+pause(15)
+
 for i=1:20000
     intent.step()
     net_field = intent.intent_field.field + env_field.field;
     config = plnr.descend_grad(config, net_field);
     
-    %figure(4)
-    %contourf(intent.intent_field.field)
-%     title("EMG Potential Field")
-%     xlabel("Shoulder Angle (deg)")
-%     ylabel("Elbow Angle (deg)")
-%     writeVideo(vw, getframe(gcf));
+    subplot(1,3,1)
+    contourf(intent.intent_field.field, -150:1.5:150)
+    title("EMG Potential Field")
+    xlabel("Shoulder Angle (deg)")
+    ylabel("Elbow Angle (deg)")
 
-    %figure(5)
-    %contourf(env_field.field)
+    subplot(1,3,2)
+    contourf(env_field.field)
+    title("Environment Potential Field")
+    xlabel("Shoulder Angle (deg)")
+    ylabel("Elbow Angle (deg)")
     
-    figure(6)
-    contourf(net_field, -50:0.5:50)
+    subplot(1,3,3)
+    contourf(net_field, -150:1.5:150)
     hold on
     plot(config(1), config(2), 'r.', 'MarkerSize', 30)
+    title("Combined Potential Field")
+    xlabel("Shoulder Angle (deg)")
+    ylabel("Elbow Angle (deg)")
+    writeVideo(vw, getframe(gcf));
     hold off
+    
+    drawnow
     
 %     for i=1:size(net_field,1)-5
 %         for j=1:size(net_field,2)-5

@@ -39,6 +39,9 @@ classdef obstacle_map < handle
                 for i = 1:size(obstacle.edges, 1)
                     edge = obstacle.edges(i,:);
                     plot([edge(1), edge(3)], [edge(2), edge(4)], 'k-')
+                    plot([edge(1), edge(3)], [edge(2)+360, edge(4)+360], 'k-')
+                    plot([edge(1)+360, edge(3)+360], [edge(2), edge(4)], 'k-') % Plot normal edge
+                    plot([edge(1)+360, edge(3)+360], [edge(2)+360, edge(4)+360], 'k-') % Plot normal edge
                 end
             end
             
