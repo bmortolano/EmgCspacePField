@@ -26,9 +26,73 @@ classdef obstacle_map < handle
             obj.goal = new_goal;
         end
         
-        function add_obstacle(obj, obst)
+        function add_obstacle(obj, obst, check_quadrants)
             disp(obj.obstacles)
             obj.obstacles(end+1) = obst;
+            
+            if (~check_quadrants)
+                return
+            end
+            
+            % Add obstacles from other 8 quadrants if necessary.
+            if any(obst.edges(:,1) > 360) || any(obst.edges(:,3) > 360) && ~any(obst.edges(:,2) < 0) && ~any(obst.edges(:,4) < 0) && ~any(obst.edges(:,2) > 360) && ~any(obst.edges(:,4) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) - 360;
+                obst2_edges(:,3) = obst2_edges(:,3) - 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,1) < 0) || any(obst.edges(:,3) < 0) && ~any(obst.edges(:,2) < 0) && ~any(obst.edges(:,4) < 0) && ~any(obst.edges(:,2) > 360) && ~any(obst.edges(:,4) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) + 360;
+                obst2_edges(:,3) = obst2_edges(:,3) + 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,2) > 360) || any(obst.edges(:,4) > 360) && ~any(obst.edges(:,1) < 0) && ~any(obst.edges(:,3) < 0) && ~any(obst.edges(:,1) > 360) && ~any(obst.edges(:,3) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,2) = obst2_edges(:,2) - 360;
+                obst2_edges(:,4) = obst2_edges(:,4) - 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,2) < 0) || any(obst.edges(:,2) < 0) && ~any(obst.edges(:,1) < 0) && ~any(obst.edges(:,3) < 0) && ~any(obst.edges(:,1) > 360) && ~any(obst.edges(:,3) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,2) = obst2_edges(:,2) + 360;
+                obst2_edges(:,4) = obst2_edges(:,4) + 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            
+            if any(obst.edges(:,1) > 360) || any(obst.edges(:,3) > 360) && any(obst.edges(:,2) > 360) || any(obst.edges(:,4) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) - 360;
+                obst2_edges(:,2) = obst2_edges(:,2) - 360;
+                obst2_edges(:,3) = obst2_edges(:,3) - 360;
+                obst2_edges(:,4) = obst2_edges(:,4) - 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,1) > 360) || any(obst.edges(:,3) > 360) && any(obst.edges(:,2) < 0) || any(obst.edges(:,4) < 0)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) - 360;
+                obst2_edges(:,2) = obst2_edges(:,2) + 360;
+                obst2_edges(:,3) = obst2_edges(:,3) - 360;
+                obst2_edges(:,4) = obst2_edges(:,4) + 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,1) < 0) || any(obst.edges(:,3) < 0) && any(obst.edges(:,2) > 360) || any(obst.edges(:,4) > 360)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) + 360;
+                obst2_edges(:,2) = obst2_edges(:,2) - 360;
+                obst2_edges(:,3) = obst2_edges(:,3) + 360;
+                obst2_edges(:,4) = obst2_edges(:,4) - 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            if any(obst.edges(:,1) < 0) || any(obst.edges(:,3) < 0) && any(obst.edges(:,2) < 0) || any(obst.edges(:,4) < 0)
+                obst2_edges = obst.edges;
+                obst2_edges(:,1) = obst2_edges(:,1) + 360;
+                obst2_edges(:,2) = obst2_edges(:,2) + 360;
+                obst2_edges(:,3) = obst2_edges(:,3) + 360;
+                obst2_edges(:,4) = obst2_edges(:,4) + 360;
+                obj.obstacles(end+1) = obstacle(obst2_edges);
+            end
+            
             disp(obj.obstacles)
         end
         

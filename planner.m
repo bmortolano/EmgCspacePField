@@ -31,7 +31,7 @@ classdef planner < handle
         end
 
         function new_x=descend_grad(obj, x, net_field)%returns next location along path. x describes current location on pot field
-            epsilon = 50;
+            epsilon = 200;
             grad = obj.get_grad(x, net_field);
             if (norm(grad) == 0)
                 new_x = x;

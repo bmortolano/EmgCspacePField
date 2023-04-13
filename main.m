@@ -31,13 +31,13 @@ obst1_edges = [
     [[10, 70], [30, 50]]];
 
 angles = linspace(0, 360, 50);
-r = 20;
+r = 30;
 offset_x = -60;
 offset_y = -20;
 obst2_edges = [r*sind(angles)'+offset_y r*cosd(angles)'+offset_x r*sind(angles-angles(2))'+offset_y r*cosd(angles-angles(2))'+offset_x ];
 
-euc_map.add_obstacle(obstacle(obst1_edges))
-euc_map.add_obstacle(obstacle(obst2_edges))
+euc_map.add_obstacle(obstacle(obst1_edges), 0)
+euc_map.add_obstacle(obstacle(obst2_edges), 0)
 euc_map.plotMap(1)
 
 %%
@@ -47,7 +47,7 @@ c_map = obstacle_map(cmap_sz);
 
 for e_obstacle = euc_map.obstacles
     c_obstacle = convert_eObst_to_c_Obst(e_obstacle, link_lengths, gridx, gridy);
-    c_map.add_obstacle(c_obstacle);
+    c_map.add_obstacle(c_obstacle, 1);
 end
 
 c_map.plotMap(0)
@@ -55,7 +55,10 @@ c_map.plotMap(0)
 %%
 % Create and plot field
 env_field = env_pot_field(cmap_sz);
-env_field.add_obstacle(c_map.obstacles(1));
+for obstacle = c_map.obstacles
+    env_field.add_obstacle(obstacle);
+end
+
 env_field.update_pot_field();
 xlabel("Shoulder Angle (deg)")
 ylabel("Elbow Angle (deg)")
@@ -150,7 +153,7 @@ function [t1 t2] = convert_Euclidean_to_Config(e_pt, geom)
     a2 = geom(2);
 
     t2 = acosd( (x^2 + y^2 - a1^2 - a2^2) / (2 * a1 * a2) );
-    t1 = atan2d(y, x) + atan2d( a2*sin(t2), a1 + a2*cos(t2) );
+    t1 = atan2d(y, x) - atan2d( a2*sind(t2), a1 + a2*cosd(t2) );
     
 %     t1 = mod(t1, 360);
 %     t2 = mod(t2, 360);
@@ -168,6 +171,10 @@ function c_obst = convert_eObst_to_c_Obst(e_obst, geom, gridx, gridy)
     
     for i=1:size(e_obst_x, 2)
         [c_obst_x(i), c_obst_y(i)] = convert_Euclidean_to_Config([e_obst_x(i), e_obst_y(i)], geom);
+    end
+    
+    if isempty(c_obst_x)
+        return
     end
     
     % Create polygon around C-Space obstacle
