@@ -85,7 +85,7 @@ ylabel("Elbow Angle (deg)")
 intent = user_intent_file_wrapper(0.8 * ones(4,1), [30, 30], "Prelim_EMG_data.xlsx")
 
 %% Create video for EMG Potential Field
-vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField12.mp4', 'MPEG-4');
+vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField14.mp4', 'MPEG-4');
 vw.Quality = 90;
 vw.FrameRate = 25;
 open(vw);
@@ -98,7 +98,7 @@ gradient_map_y = zeros(size(intent.intent_field.field));
 figure(6)
 set(gcf,'Color','w')
 
-pause(15)
+pause(2)
 
 for i=1:30000
     intent.step()
