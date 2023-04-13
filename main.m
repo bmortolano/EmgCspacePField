@@ -85,7 +85,7 @@ ylabel("Elbow Angle (deg)")
 intent = user_intent_file_wrapper(0.8 * ones(4,1), [30, 30], "Prelim_EMG_data.xlsx")
 
 %% Create video for EMG Potential Field
-vw = VideoWriter('C:\Users\18504\Desktop\EMGPotField14.mp4', 'MPEG-4');
+vw = VideoWriter('video3.mp4', 'MPEG-4');
 vw.Quality = 90;
 vw.FrameRate = 25;
 open(vw);
@@ -96,34 +96,62 @@ gradient_map_x = zeros(size(intent.intent_field.field));
 gradient_map_y = zeros(size(intent.intent_field.field));
 
 figure(6)
-set(gcf,'Color','w')
 
 pause(2)
 
-for i=1:30000
+for i=1:100
+    i
     intent.step()
     net_field = intent.intent_field.field + env_field.field;
     config = plnr.descend_grad(config, net_field);
     
-    subplot(1,3,1)
-    contourf(intent.intent_field.field, -150:1.5:150)
-    title("EMG Potential Field")
-    xlabel("Shoulder Angle (deg)")
-    ylabel("Elbow Angle (deg)")
+%     subplot(1,3,1) %comment both these sections out for 3d view, include
+%     for 2d view
+%     contourf(intent.intent_field.field, -150:1.5:150)
+%     title("EMG Potential Field")
+%     xlabel("Shoulder Angle (deg)")
+%     ylabel("Elbow Angle (deg)")
+% 
+%     subplot(1,3,2)
+%     contourf(env_field.field)
+%     title("Environment Potential Field")
+%     xlabel("Shoulder Angle (deg)")
+%     ylabel("Elbow Angle (deg)")
 
-    subplot(1,3,2)
-    contourf(env_field.field)
-    title("Environment Potential Field")
-    xlabel("Shoulder Angle (deg)")
-    ylabel("Elbow Angle (deg)")
+    round_config=round(config);
+
+    if round_config(1)>359
+        round_config(1)=359;
+    end
+
+    if round_config(2)>359
+        round_config(2)=359;
+    end
+
+    if round_config(1)<1
+        round_config(1)=1;
+    end
+
+    if round_config(2)<1
+        round_config(2)=1;
+    end
     
-    subplot(1,3,3)
-    contourf(net_field, -150:1.5:150)
+    %subplot(1,3,3) %for 3d view, comment this out, include for 2d view
+    surf(net_field,'EdgeColor','none') %for 2d view, change this to contourf and remove edge color none and add -150:1.5:150
     hold on
-    plot(config(1), config(2), 'r.', 'MarkerSize', 30)
+    set(gcf,'Color','w')
+
+    view(i*720/1000,30) %for 2d view, comment this out
+    camva(11) %for 2d view, comment this out
+    xlim([0 360]) %for 2d view, comment this out
+    ylim([0 360]) %for 2d view, comment this out
+    zlim([-100 60]) %for 2d view, comment this out
+
+    plot3(config(1), config(2),net_field(round_config(2),round_config(1)),'r.', 'MarkerSize', 30) %for 2d view, change plot3 to plot and remove z param net_field(round_config(2),round_config(1))
     title("Combined Potential Field")
     xlabel("Shoulder Angle (deg)")
     ylabel("Elbow Angle (deg)")
+    zlabel('Potential')
     writeVideo(vw, getframe(gcf));
     hold off
     

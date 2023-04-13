@@ -17,7 +17,7 @@ classdef env_pot_field < handle
         goal = zeros(2);
         sz = [100 100];
         repulsion_decay = 0.05;
-        repulsion_magnitude = 5;
+        repulsion_magnitude = 20;
     end
     
     methods
